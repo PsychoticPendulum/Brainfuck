@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 #include <getopt.h>
 
 struct Options {
@@ -11,16 +10,16 @@ struct Options {
 
 void usage() {
     printf("Usage: bf <options> <file>\n");
-    printf("\t-s\tSet size of array\n\t\tDefault: 32kB\n");
-    printf("\t-f\tSet max size of surce file\n\t\tDefault: 16kB\n");
-    printf("\t-k\tSet size of instruction stack\n\t\tDefault: 8B\n");
+    printf("\t-s\tSet size of array\n\t\tDefault: 32kiB\n");
+    printf("\t-f\tSet max size of surce file\n\t\tDefault: 16kiB\n");
+    printf("\t-k\tSet size of instruction stack\n\t\tDefault: 32B\n");
 }
 
 void brainfuck(char *file, struct Options opt) {
     // Open file
+    char c;
     FILE *fptr;
     fptr = fopen(file, "r");
-    char c;
     if (fptr == NULL) {
         printf("Error reading file\n");
         return;
@@ -30,9 +29,7 @@ void brainfuck(char *file, struct Options opt) {
     char code[opt.source_size];
     int cptr = 0;
     while ((c = fgetc(fptr)) != EOF) {
-        if (c != 0xa) {
-            code[cptr++] = c;
-        }
+        code[cptr++] = c;
     }
 
     // Create stack
@@ -40,9 +37,9 @@ void brainfuck(char *file, struct Options opt) {
     int sptr = 0;
 
     // Create array
-    char array[32768];
+    char array[opt.array_size];
     int aptr = 0;
-    for (int i = 0; i < 32768; i++) {
+    for (int i = 0; i < opt.array_size; i++) {
         array[i] = 0;
     }
 
@@ -85,7 +82,7 @@ void brainfuck(char *file, struct Options opt) {
 int main(int argc, char **argv) {
     int option;
     struct Options opt = {
-        16384,  32768,  8
+        16384,  32768,  32
     };
 
     // Get options from agruments
